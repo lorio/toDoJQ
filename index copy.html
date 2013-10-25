@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ToDo_01</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="The Chopping Block, Inc." />
+	<meta name="geo.country" content="US" />
+	<meta name="dc.language" content="en" />
+	<meta name="description" content="" />
+	<meta name="keywords" content="" />
+	
+
+	
+	<style type="text/css" media="screen">		
+		/*local styles if any (quick tests and local only overrides)*/
+		
+		#tasks li{
+			list-style: none;
+		}
+		
+		#tasks .selected{
+			list-style: disc;
+		}
+		
+		.completed{
+			text-decoration: line-through;
+		}
+	</style>
+</head>
+<body>
+
+	<div class="wrap" >
+		Project: ToDo_01
+		
+		<ol>
+			<li>Append tasks entered in the field to the end of the list</li>
+			<li>Clicking on a task should toggle the completed class</li>
+			<li>After clicking Add Task, the input field should be emptied</li>
+		</ol>
+		
+		<div><input type="text" value="" id="new_task"><button id="add_task">Add Task</button></div>
+		
+		<ul id="tasks">
+			<li class="completed selected">One Task</li>
+			<li>Two Task</li>
+		</ul>
+		
+	</div>
+	<script type="text/javascript" charset="utf-8">
+		
+		// 1. Javascript should setup the event listener (onclicks) for the tasks that already exist
+		// 2. Something weird is going to happen when you update the tasks UL, all of the onclicks are going to erased
+		//    Every time you add something to the list, you need to redefine the onclicks for all of them
+		
+		var addTaskButton = document.querySelector("#add_task");
+		var tasks = document.querySelectorAll("#tasks li");		
+		
+		// Function to add task to page
+		var addTask = function(){
+			
+			var taskInput = document.querySelector("#new_task");
+			var newTaskHTML = document.createElement("li");		
+			var tasksList = document.querySelector("#tasks");		
+			var firstChild = tasksList.children[0];		
+			
+			if(taskInput.value !== ""){
+				//Create the html for the new task
+				newTaskHTML.innerHTML = taskInput.value;
+			
+				// Adding event listener to new LI element
+				newTaskHTML.addEventListener("click", taskClicked);
+				// Add the new task to the bottom of the list
+			
+				// tasksList.appendChild(newTaskHTML);
+				tasksList.insertBefore(newTaskHTML, firstChild);
+			
+				//Empties the input field
+				taskInput.value = "";
+			}
+
+
+		}
+		
+		// Function to complete a task
+		var taskClicked = function(event){
+			
+			
+						
+			event.target.classList.toggle("completed");			
+			
+			// var element = event.target;
+			
+			// Only removeChild is defined, so we need to find the parent element
+			// element.parentElement.removeChild(element);
+		}
+		
+		
+		// Make add task button work
+		addTaskButton.addEventListener("click", addTask);
+		
+	
+		// Adding Enter key event listener
+		window.addEventListener("keyup", function(event){
+			
+			var tasksList = document.querySelector("#tasks");		
+			var taskInput = document.querySelector("#new_task");
+			// console.dir(event);
+			
+			// the enter key maps to 13
+			if(event.keyCode === 13){
+				
+				addTask();
+				
+			}else if(event.keyCode === 38){
+				// Up Arrow
+				
+				//Removes focus from input
+				taskInput.blur();
+				
+				var currentlySelected = document.querySelector(".selected");
+				currentlySelected.classList.remove("selected");
+				
+				
+				if(currentlySelected.previousElementSibling){
+					// Already at top of list, need to go to bottom
+					
+				
+					currentlySelected.previousElementSibling.classList.add("selected");
+					
+					
+				}else{
+					
+					tasksList.children[tasksList.children.length-1].classList.add("selected");
+				}
+				
+				
+			}else if(event.keyCode === 40 ){
+				// Down Arrow
+				//Removes focus from input
+				taskInput.blur();
+				
+				var currentlySelected = document.querySelector(".selected");
+				currentlySelected.classList.remove("selected");				
+				
+				if(currentlySelected.nextElementSibling){
+					// Already at top of list, need to go to bottom
+					
+				
+					currentlySelected.nextElementSibling.classList.add("selected");
+					
+					
+				}else{
+					
+					tasksList.children[0].classList.add("selected");
+				}
+			
+				// Ignore spacebar if the focused element is the input			
+			}else if(event.keyCode === 32 && document.activeElement !== taskInput){
+				// Space Bar
+				// Toggle selected task, completed class
+				document.querySelector(".selected").classList.toggle("completed");
+				
+				
+			}
+			
+			
+			
+		});
+		
+		
+
+		// Loop to add completed event listener to all of the <li>
+		for (var i=0; i < tasks.length; i++) {
+			tasks[i].addEventListener("click", taskClicked);
+			
+			
+			// Without addEventListener, something like this:
+			// tasks[i].onclick = function(event){			
+			// 	event.target.classList.toggle("completed");			
+			// }
+		};
+		
+		
+		
+		
+		// images[index]
+		
+		// All of this should happen when the user press up/down arrow
+		
+		//
+		// tasksList.children[index].classList.remove("selected");
+		
+		//Calculate your new index and add selected
+		// tasksList.children[index].classList.add("selected");
+		
+		
+		// When you hit the space bar, you just need to find, with queryselector
+		// the element with the "selected" class, and then toggle the "completed"
+		
+		
+
+		
+		
+		
+		
+		
+	</script>
+</body>
+</html>
